@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Smart Inventory Dashboard</title>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        /* THIS is the important fix */
+        #app {
+
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+
+            /* 🔥 important */
+            background: #0f172a;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+        }
+
+        .main {
+            min-height: 85.5vh;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+
+        .live {
+            color: #22c55e;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 150px);
+            gap: 25px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 15px;
+            background: #1e293b;
+            transition: 0.3s;
+        }
+
+        .closed {
+            background: red;
+            box-shadow: 0 0 8px red, 0 0 16px red;
+            animation: glowRed 1.2s infinite alternate;
+            border: 2px solid red;
+            box-shadow: 0 0 15px red;
+        }
+
+        .open {
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e, 0 0 16px #22c55e;
+            animation: glowGreen 1.5s infinite alternate;
+            border: 2px solid #22c55e;
+            box-shadow: 0 0 15px #22c55e;
+        }
+
+        .status {
+            height: 1px;
+            width: 100%;
+            border-radius: 5px;
+            margin-top: 10px;
+
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .log {
+            margin-top: 30px;
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+            font-size: 14px;
+            background: #1e293b;
+            padding: 10px;
+            border-radius: 10px;
+            height: 120px;
+            overflow-y: auto;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        footer {
+            margin-top: auto;
+            /* 🔥 THIS pushes footer to bottom */
+            padding: 15px;
+            background: #1e293b;
+            border-top: 1px solid #334155;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        footer strong {
+            color: #22c55e;
+        }
+
+        #splash {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        /* Loader animation */
+        .loader {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: inline-block;
+            border-top: 4px solid #FFF;
+            border-right: 4px solid transparent;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+            margin: 20px 0px 20px 0px;
+        }
+
+        .loader::after {
+            content: '';
+            box-sizing: border-box;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border-bottom: 4px solid #22c55e;
+            border-left: 4px solid transparent;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes glowGreen {
+            from {
+                box-shadow: 0 0 5px #22c55e, 0 0 10px #22c55e;
+                opacity: 0.6;
+            }
+
+            to {
+                box-shadow: 0 0 15px #22c55e, 0 0 30px #22c55e;
+                opacity: 1;
+            }
+        }
+
+        @keyframes glowRed {
+            from {
+                box-shadow: 0 0 5px red, 0 0 10px red;
+                opacity: 0.5;
+            }
+
+            to {
+                box-shadow: 0 0 15px red, 0 0 30px red;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="splash">
+        <h1>📦 Smart Inventory</h1>
+        <div class="loader"></div>
+        <p><strong></strong>Made by - </strong></p>
+        <p>Parth Mangire | Shravani Naik | Riya Chinchankar</p>
+    </div>
+    <div id="app" style="display:none;">
+        <div class="main">
+            <h1>📦 Smart Inventory</h1>
+            <p class="live">● LIVE</p>
+
+            <div class="grid">
+                <div id="A1" class="card">A1<div class="status closed"></div>
+                </div>
+                <div id="A2" class="card">A2<div class="status open"></div>
+                </div>
+                <div id="A3" class="card">A3<div class="status open"></div>
+                </div>
+                <div id="A4" class="card">A4<div class="status closed"></div>
+                </div>
+                <div id="A5" class="card">A5<div class="status open"></div>
+                </div>
+                <div id="A6" class="card">A6<div class="status closed"></div>
+                </div>
+            </div>
+
+            <div class="log" id="log">
+                <p>Connecting to system...</p>
+            </div>
+        </div>
+        <footer>
+            <p><strong></strong>Made by - </strong></p>
+            <p>Parth Mangire | Shravani Naik | Riya Chinchankar</p>
+        </footer>
+    </div>
+
+    <script>
+        const ESP_IP = "https://nanometer-fleshed-sesame.ngrok-free.dev/data"; // 🔥 replace with your ESP IP
+
+        window.onload = function () {
+            setTimeout(() => {
+                document.getElementById("splash").style.display = "none";
+                document.getElementById("app").style.display = "block";
+
+                startFetching(); // 🔥 start after splash
+            }, 2500);
+        };
+
+        function updateUI(data) {
+            const map = [
+                { id: "A1", val: data.slot1 },
+                { id: "A2", val: data.slot2 },
+                { id: "A3", val: data.slot3 },
+                { id: "A4", val: data.slot4 },
+                { id: "A5", val: data.slot5 },
+                { id: "A6", val: data.slot6 }
+            ];
+
+            map.forEach(slot => {
+                let card = document.getElementById(slot.id);
+                let status = card.querySelector(".status");
+
+                if (slot.val === 1) {
+                    status.classList.remove("closed");
+                    status.classList.add("open");
+                } else {
+                    status.classList.remove("open");
+                    status.classList.add("closed");
+                }
+            });
+
+            document.getElementById("log").innerHTML = "Last updated: " + new Date().toLocaleTimeString();
+        }
+
+        function fetchData() {
+            fetch(ESP_IP)
+                .then(res => res.json())
+                .then(data => {
+                    updateUI(data);
+                })
+                .catch(err => {
+                    document.getElementById("log").innerHTML = "Connection error ⚠️";
+                });
+        }
+
+        // 🔥 THIS MAKES IT REAL-TIME
+        function startFetching() {
+            fetchData(); // first call
+            setInterval(fetchData, 500); // every 500ms
+        }
+    </script>
+</body>
+
+</html>
