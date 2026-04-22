@@ -291,15 +291,20 @@
         }
 
         function fetchData() {
-            fetch(ESP_IP)
-                .then(res => res.json())
-                .then(data => {
-                    updateUI(data);
-                })
-                .catch(err => {
-                    document.getElementById("log").innerHTML = "Connection error ⚠️";
-                });
+    fetch(ESP_IP, {
+        headers: {
+            "ngrok-skip-browser-warning": "true" // 👈 Add this line!
         }
+    })
+    .then(res => res.json())
+    .then(data => {
+        updateUI(data);
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById("log").innerHTML = "Connection error ⚠️";
+    });
+}
 
         // 🔥 THIS MAKES IT REAL-TIME
         function startFetching() {
