@@ -3,85 +3,89 @@
 
 <head>
     <title>Smart Inventory Dashboard</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
-        /* THIS is the important fix */
-        #app {
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
 
+        body {
+            display: flex;
+            flex-direction: column;
+            background: #0f172a;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            min-height: 100vh;
+        }
+
+        #app {
             flex: 1;
             display: flex;
             flex-direction: column;
         }
 
-        body {
-            display: flex;
-            flex-direction: column;
-
-            /* 🔥 important */
-            background: #0f172a;
-            color: white;
-            font-family: Arial;
-            text-align: center;
-        }
-
         .main {
-            min-height: 85.5vh;
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 20px 16px;
         }
 
         h1 {
             text-align: center;
             margin-top: 20px;
+            font-size: clamp(1.4rem, 5vw, 2rem);
+            margin-bottom: 8px;
         }
-
 
         .live {
             color: #22c55e;
             animation: blink 1s infinite;
+            font-size: clamp(0.85rem, 3vw, 1rem);
+            margin: 4px 0 0 0;
         }
 
         @keyframes blink {
-            50% {
-                opacity: 0.3;
-            }
+            50% { opacity: 0.3; }
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(3, 150px);
-            gap: 25px;
-            justify-content: center;
-            margin-top: 30px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(12px, 3vw, 25px);
+            width: 100%;
+            max-width: 520px;
+            margin-top: 24px;
         }
 
         .card {
-            padding: 20px;
+            padding: clamp(14px, 4vw, 20px) clamp(10px, 3vw, 20px);
             border-radius: 15px;
             background: #1e293b;
             transition: 0.3s;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            font-weight: bold;
+            min-width: 0;
         }
 
         .closed {
-            background: red;
-            box-shadow: 0 0 8px red, 0 0 16px red;
+            background: rgba(255, 30, 30, 0.15);
             animation: glowRed 1.2s infinite alternate;
             border: 2px solid red;
             box-shadow: 0 0 15px red;
         }
 
         .open {
-            background: #22c55e;
-            box-shadow: 0 0 8px #22c55e, 0 0 16px #22c55e;
+            background: rgba(34, 197, 94, 0.12);
             animation: glowGreen 1.5s infinite alternate;
             border: 2px solid #22c55e;
             box-shadow: 0 0 15px #22c55e;
@@ -92,24 +96,22 @@
             width: 100%;
             border-radius: 5px;
             margin-top: 10px;
-
-            font-size: 18px;
+            font-size: clamp(0.75rem, 2.5vw, 1rem);
             margin-top: 10px;
         }
 
         .log {
-            margin-top: 30px;
-            width: 300px;
+            margin-top: 24px;
+            width: 100%;
+            max-width: 340px;
             margin-left: auto;
             margin-right: auto;
-            text-align: left;
-            font-size: 14px;
-            background: #1e293b;
-            padding: 10px;
-            border-radius: 10px;
-            height: 120px;
-            overflow-y: auto;
             text-align: center;
+            font-size: clamp(0.75rem, 3vw, 0.9rem);
+            background: #1e293b;
+            padding: 12px 16px;
+            border-radius: 10px;
+            min-height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -117,22 +119,26 @@
 
         footer {
             margin-top: auto;
-            /* 🔥 THIS pushes footer to bottom */
-            padding: 15px;
+            padding: clamp(10px, 3vw, 15px);
             background: #1e293b;
             border-top: 1px solid #334155;
-            font-size: 14px;
+            font-size: clamp(0.75rem, 3vw, 0.875rem);
             color: #94a3b8;
+            line-height: 1.6;
         }
 
         footer strong {
             color: #22c55e;
         }
 
+        footer p {
+            margin: 2px 0;
+        }
+
+        /* ── Splash ── */
         #splash {
             position: fixed;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: #0f172a;
             color: white;
             display: flex;
@@ -140,19 +146,30 @@
             align-items: center;
             justify-content: center;
             z-index: 999;
+            padding: 20px;
         }
 
-        /* Loader animation */
+        #splash h1 {
+            font-size: clamp(1.4rem, 6vw, 2rem);
+        }
+
+        #splash p {
+            font-size: clamp(0.8rem, 3.5vw, 1rem);
+            margin: 4px 0;
+        }
+
+        /* Loader */
         .loader {
             width: 48px;
             height: 48px;
             border-radius: 50%;
             display: inline-block;
+            position: relative;
             border-top: 4px solid #FFF;
             border-right: 4px solid transparent;
             box-sizing: border-box;
             animation: rotation 1s linear infinite;
-            margin: 20px 0px 20px 0px;
+            margin: 20px 0;
         }
 
         .loader::after {
@@ -169,47 +186,51 @@
         }
 
         @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @keyframes glowGreen {
-            from {
-                box-shadow: 0 0 5px #22c55e, 0 0 10px #22c55e;
-                opacity: 0.6;
-            }
-
-            to {
-                box-shadow: 0 0 15px #22c55e, 0 0 30px #22c55e;
-                opacity: 1;
-            }
+            from { box-shadow: 0 0 5px #22c55e, 0 0 10px #22c55e; opacity: 0.6; }
+            to   { box-shadow: 0 0 15px #22c55e, 0 0 30px #22c55e; opacity: 1; }
         }
 
         @keyframes glowRed {
-            from {
-                box-shadow: 0 0 5px red, 0 0 10px red;
-                opacity: 0.5;
-            }
+            from { box-shadow: 0 0 5px red, 0 0 10px red; opacity: 0.5; }
+            to   { box-shadow: 0 0 15px red, 0 0 30px red; opacity: 1; }
+        }
 
-            to {
-                box-shadow: 0 0 15px red, 0 0 30px red;
-                opacity: 1;
+        /* ── Responsive breakpoints ── */
+
+        /* Small phones (< 360px): 2-column grid */
+        @media (max-width: 359px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Landscape phones */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .main {
+                padding: 10px 16px;
+            }
+            h1 {
+                margin-top: 8px;
+                font-size: 1.2rem;
+            }
+            .grid {
+                margin-top: 12px;
+                gap: 10px;
+            }
+            .log {
+                margin-top: 12px;
+            }
+        }
+
+        /* Tablets and up: restore fixed card sizing */
+        @media (min-width: 600px) {
+            .grid {
+                grid-template-columns: repeat(3, 150px);
             }
         }
     </style>
@@ -219,48 +240,43 @@
     <div id="splash">
         <h1>📦 Smart Inventory</h1>
         <div class="loader"></div>
-        <p><strong></strong>Made by - </strong></p>
-        <p>Parth Mangire | Shravani Naik | Riya Chinchankar</p>
+        
     </div>
+
     <div id="app" style="display:none;">
         <div class="main">
-            <h1>📦 Smart Inventory</h1>
+            <div style="font-size: 50px; margin-bottom: 15px;">📦</div>
+            <div style="font-size: 25px;">Smart Inventory</div>
             <p class="live">● LIVE</p>
 
             <div class="grid">
-                <div id="A1" class="card">A1<div class="status closed"></div>
-                </div>
-                <div id="A2" class="card">A2<div class="status open"></div>
-                </div>
-                <div id="A3" class="card">A3<div class="status open"></div>
-                </div>
-                <div id="A4" class="card">A4<div class="status closed"></div>
-                </div>
-                <div id="A5" class="card">A5<div class="status open"></div>
-                </div>
-                <div id="A6" class="card">A6<div class="status closed"></div>
-                </div>
+                <div id="A1" class="card">A1<div class="status closed"></div></div>
+                <div id="A2" class="card">A2<div class="status open"></div></div>
+                <div id="A3" class="card">A3<div class="status open"></div></div>
+                <div id="A4" class="card">A4<div class="status closed"></div></div>
+                <div id="A5" class="card">A5<div class="status open"></div></div>
+                <div id="A6" class="card">A6<div class="status closed"></div></div>
             </div>
 
             <div class="log" id="log">
                 <p>Connecting to system...</p>
             </div>
         </div>
+
         <footer>
-            <p><strong></strong>Made by - </strong></p>
+            <p><strong>Made by —</strong></p>
             <p>Parth Mangire | Shravani Naik | Riya Chinchankar</p>
         </footer>
     </div>
 
     <script>
-        const ESP_IP = "https://nanometer-fleshed-sesame.ngrok-free.dev/data"; // 🔥 replace with your ESP IP
+        const ESP_IP = "https://nanometer-fleshed-sesame.ngrok-free.dev/data";
 
         window.onload = function () {
             setTimeout(() => {
                 document.getElementById("splash").style.display = "none";
-                document.getElementById("app").style.display = "block";
-
-                startFetching(); // 🔥 start after splash
+                document.getElementById("app").style.display = "flex";
+                startFetching();
             }, 2500);
         };
 
@@ -277,7 +293,6 @@
             map.forEach(slot => {
                 let card = document.getElementById(slot.id);
                 let status = card.querySelector(".status");
-
                 if (slot.val === 1) {
                     status.classList.remove("closed");
                     status.classList.add("open");
@@ -291,27 +306,21 @@
         }
 
         function fetchData() {
-    fetch(ESP_IP, {
-        headers: {
-            "ngrok-skip-browser-warning": "true" // 👈 Add this line!
+            fetch(ESP_IP, {
+                headers: { "ngrok-skip-browser-warning": "true" }
+            })
+            .then(res => res.json())
+            .then(data => updateUI(data))
+            .catch(err => {
+                console.error(err);
+                document.getElementById("log").innerHTML = "Connection error ⚠️";
+            });
         }
-    })
-    .then(res => res.json())
-    .then(data => {
-        updateUI(data);
-    })
-    .catch(err => {
-        console.error(err);
-        document.getElementById("log").innerHTML = "Connection error ⚠️";
-    });
-}
 
-        // 🔥 THIS MAKES IT REAL-TIME
         function startFetching() {
-            fetchData(); // first call
-            setInterval(fetchData, 500); // every 500ms
+            fetchData();
+            setInterval(fetchData, 500);
         }
     </script>
 </body>
-
 </html>
